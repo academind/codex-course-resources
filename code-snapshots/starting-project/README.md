@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# TinyNotes UI preview
 
-## Getting Started
+Presentation-only pages based on SPEC.MD, with static sample content and responsive aqua styling.
 
-First, run the development server:
+Run `bun install` and `bun run dev`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Routes
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `/`: redirects to `/login` without checking a session.
+- `/login` and `/register`: disabled account form previews.
+- `/notes`: three sample notes and an expandable empty-state preview.
+- `/notes/new`: blank editor placeholder.
+- `/notes/a-little-more-space`, `/notes/weekend-ideas`, `/notes/project-notebook`: sample editor pages with inactive save, delete, and share controls.
+- `/s/sample-shared-note`: read-only shared sample.
+- Unknown routes, note IDs, and share tokens show the custom 404.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The root layout supplies the header, main landmark, and footer. Notes and shared-note layouts supply their own content containers. Loading components cover notes and shared notes. Login and registration include an expandable validation-message example.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+There is no authentication, database, TipTap integration, persistence, autosave, token generation, server action, or API. The public preview renders hard-coded text through React, not external HTML. Sample notes live in `app/_lib/fixtures.ts`.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Checks: `bun run lint` and `bun run build`.

@@ -21,6 +21,11 @@
 /build
 
 # misc
+/data/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
 .DS_Store
 *.pem
 

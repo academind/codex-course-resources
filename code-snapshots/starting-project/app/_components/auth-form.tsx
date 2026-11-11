@@ -1,5 +1,43 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { authClient } from "../_lib/auth-client";
+
 export function AuthForm({ register = false }: { register?: boolean }) {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
+    const name = String(form.get("name") ?? "").trim();
+
+    const result = register
+      ? await authClient.signUp.email({ email, password, name })
+      : await authClient.signIn.email({ email, password });
+
+    if (result.error) {
+      setError(
+        register
+          ? "We could not create your account. Check your details and try again."
+          : "The email address or password is incorrect.",
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    router.push("/notes");
+    router.refresh();
+  }
+
   return (
     <section className="auth-grid">
       <div className="auth-intro">
@@ -27,34 +65,56 @@ export function AuthForm({ register = false }: { register?: boolean }) {
             ? "Give your thoughts a place to land."
             : "Pick up where your thoughts left off."}
         </p>
-        <form aria-label={register ? "Registration preview" : "Login preview"}>
+        <form aria-label={register ? "Create your account" : "Log in"} onSubmit={handleSubmit}>
           {register && (
             <label>
               Name
-              <input autoComplete="name" placeholder="Alex Morgan" disabled />
+              <input
+                name="name"
+                autoComplete="name"
+                placeholder="Alex Morgan"
+                required
+                disabled={isSubmitting}
+              />
             </label>
           )}
           <label>
             Email address
-            <input type="email" autoComplete="email" placeholder="you@example.com" disabled />
+            <input
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              required
+              disabled={isSubmitting}
+            />
           </label>
           <label>
             Password
             <input
+              name="password"
               type="password"
               autoComplete={register ? "new-password" : "current-password"}
-              placeholder="Enter your password"
-              disabled
+              placeholder="At least 8 characters"
+              minLength={8}
+              required
+              disabled={isSubmitting}
             />
           </label>
-          <button className="button full" type="button" disabled>
-            {register ? "Create account" : "Log in"}
+          <button className="button full" type="submit" disabled={isSubmitting}>
+            {isSubmitting
+              ? register
+                ? "Creating account…"
+                : "Logging in…"
+              : register
+                ? "Create account"
+                : "Log in"}
           </button>
-          <p className="hint">Static preview · Account forms are not connected.</p>
-          <details className="validation">
-            <summary>Example validation message</summary>
-            <p>Please check your email address and password.</p>
-          </details>
+          {error && (
+            <p className="validation" role="alert">
+              {error}
+            </p>
+          )}
         </form>
         <p className="auth-switch">
           {register ? "Already have an account?" : "New to TinyNotes?"}{" "}
@@ -62,9 +122,6 @@ export function AuthForm({ register = false }: { register?: boolean }) {
             {register ? "Log in" : "Create an account"}
           </Link>
         </p>
-        <Link className="preview-link" href="/notes">
-          Explore the sample notebook ?
-        </Link>
       </div>
     </section>
   );

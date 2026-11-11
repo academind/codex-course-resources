@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AccountNavigation } from "./_components/account-navigation";
+import { getCurrentSession } from "./_lib/session";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +9,13 @@ export const metadata: Metadata = {
   description: "A little space for your thoughts.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getCurrentSession();
+
   return (
     <html lang="en">
       <body>
@@ -23,12 +27,16 @@ export default function RootLayout({
             <Link className="logo" href="/">
               TinyNotes<span>.</span>
             </Link>
-            <nav aria-label="Account">
-              <Link href="/login">Login</Link>
-              <Link className="button small" href="/register">
-                Register
-              </Link>
-            </nav>
+            {session ? (
+              <AccountNavigation userName={session.user.name} />
+            ) : (
+              <nav aria-label="Account">
+                <Link href="/login">Login</Link>
+                <Link className="button small" href="/register">
+                  Register
+                </Link>
+              </nav>
+            )}
           </div>
         </header>
         <main id="content">{children}</main>

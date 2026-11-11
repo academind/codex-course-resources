@@ -6,6 +6,7 @@
     "db:migrate": "bun scripts/migrate.ts up",
     "db:rollback": "bun scripts/migrate.ts down",
     "test:migrations": "bun test scripts/migrate.test.ts",
+    "test:auth": "bun test scripts/auth.test.ts",
     "dev": "bun run --bun next dev",
     "build": "bun run --bun next build",
     "start": "bun run --bun next start",
@@ -13,6 +14,7 @@
     "format": "oxfmt"
   },
   "dependencies": {
+    "better-auth": "^1.7.20",
     "next": "16.1.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"

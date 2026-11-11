@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "db:migrate": "bun scripts/migrate.ts up",
+    "db:rollback": "bun scripts/migrate.ts down",
+    "test:migrations": "bun test scripts/migrate.test.ts",
+    "test:auth": "bun test scripts/auth.test.ts",
     "dev": "bun run --bun next dev",
     "build": "bun run --bun next build",
     "start": "bun run --bun next start",
@@ -10,12 +14,14 @@
     "format": "oxfmt"
   },
   "dependencies": {
+    "better-auth": "^1.7.20",
     "next": "16.1.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/bun": "^1.4.4",
     "@types/node": "^25.2.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

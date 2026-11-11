@@ -1,25 +1,47 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import Link from "next/link";
+import { AccountNavigation } from "./_components/account-navigation";
+import { getCurrentSession } from "./_lib/session";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Codex Demo",
-  description: "A Codex Demo App",
+  title: { default: "TinyNotes", template: "%s | TinyNotes" },
+  description: "A little space for your thoughts.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getCurrentSession();
+
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+      <body>
+        <a className="skip-link" href="#content">
+          Skip to content
+        </a>
+        <header>
+          <div className="header-inner">
+            <Link className="logo" href="/">
+              TinyNotes<span>.</span>
+            </Link>
+            {session ? (
+              <AccountNavigation userName={session.user.name} />
+            ) : (
+              <nav aria-label="Account">
+                <Link href="/login">Login</Link>
+                <Link className="button small" href="/register">
+                  Register
+                </Link>
+              </nav>
+            )}
+          </div>
+        </header>
+        <main id="content">{children}</main>
+        <footer>TinyNotes · A little space for your thoughts.</footer>
+      </body>
     </html>
   );
 }
